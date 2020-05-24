@@ -1,0 +1,16 @@
+---
+title: "ReadMe about this app"
+author: "Rishabh Kumar"
+date: "24/05/2020"
+output: html_document
+---
+# First Part 
+
+The first part of the *analysis* tab displays the summaries suggested though Text rank algorith.
+
+Calculates the pairwise distance between each sentence by computing how many terms are overlapping (Jaccard distance, implemented in textrank_jaccard). These pairwise distances among the sentences are next passed on to Google's pagerank algorithm to identify the most relevant sentences.
+
+If data contains many sentences, it makes sense not to compute all pairwise sentence distances but instead limiting the calculation of the Jaccard distance to only sentence combinations which are limited by the Minhash algorithm. This is implemented in textrank_candidates_lsh and an example is show below.
+
+# Second Part
+
