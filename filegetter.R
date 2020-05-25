@@ -40,7 +40,7 @@ fileGetter <- function(url) {
   
   dat.merged <- text_df %>%
     dplyr::group_by(rem) %>%
-    dplyr::summarise(value = paste(value, collapse = ""))
+    dplyr::summarise(value = paste(value, collapse = " "))
   print(head(dat.merged))
   
   top_3 = lexRankr::lexRank(dat.merged$value,
@@ -80,5 +80,14 @@ fileGetter <- function(url) {
                                         terminology = article_words)
   
   article_summary <- as.tibble(summary(article_summary, n = 5, keep.sentence.order = T))
+  article_summary <- article_summary %>% rename(`Text Rank Output` = value)
+  
+  #Function to sentence case the sentences
+  firstup <- function(x) {
+    substr(x, 1, 1) <- toupper(substr(x, 1, 1))
+    x
+  }
+  
+  article_summary$`Text Rank Output` <- firstup(article_summary$`Text Rank Output`)
   return(article_summary)
 }

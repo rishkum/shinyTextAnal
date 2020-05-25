@@ -20,9 +20,15 @@ source("filegetter.R", local = TRUE)
 source("topicmodeling.R", local = TRUE)
 source("getnrcPlot.R", local = TRUE)
 source("cleanText.R", local = TRUE)
+source("twttersentiment.R", local = TRUE)
+
 library(shinydashboard)
 library(knitr)
 library(rmarkdown)
+library(twitteR)
+library(magrittr)
+library(SentimentAnalysis)
+require(gridExtra)
 
 row <- function(...) {
     tags$div(class="row", ...)
@@ -37,8 +43,9 @@ ui <-  dashboardPage(
        dashboardHeader(title = "MVP Text Analysis Dashboard"),
        dashboardSidebar(
         sidebarMenu(
-            menuItem("Introduction", tabName = "dashboard", icon = icon("dashboard")),
-            menuItem("Analysis", icon = icon("th"), tabName = "analysis")
+            menuItem("Introduction", tabName = "dashboard", icon = icon("th")),
+            menuItem("Analysis", icon = icon("dashboard"), tabName = "analysis"),
+            menuItem("Bank Health", icon = icon("dashboard"), tabName = "bankhealth")
         )
     ),
     
@@ -50,15 +57,33 @@ ui <-  dashboardPage(
                     ),
             
             tabItem(tabName = "analysis",
-                    h2("Analysis of Text Speech"),
-                    textInput("text", label = h3("Link of Speech"), value = "Enter Link.."),
-                    textOutput("selected_var"),
-                    tableOutput("table")  %>% withSpinner(color="#0dc5c1"),
-                    plotOutput("nrcGraph") %>% withSpinner(color="#0dc5c1"),
-                    plotOutput("topicsGraph") %>% withSpinner(color="#0dc5c1")
+                    fluidRow( h2("Analysis of Text Speech")),
+                    fluidRow(textInput("text", label = h3("Link of Speech"), placeholder  = "Enter Link..",
+                              value = "https://www.bankofengland.co.uk/-/media/boe/files/speech/2018/cyborg-supervision-speech-by-james-proudman.pdf?la=en&hash=6FFE5A1D19EAA76681DB615D9054C53DB8823AB4.pdf")),
+                    fluidRow(textOutput("selected_var")),
+                    fluidRow(tableOutput("table")  %>% withSpinner(color="#0dc5c1")),
+                    fluidRow(plotOutput("nrcGraph") %>% withSpinner(color="#0dc5c1")),
+                    fluidRow(plotOutput("topicsGraph") %>% withSpinner(color="#0dc5c1"))
+            ),
+            tabItem(tabName = "bankhealth",
+                    (h2(" A possible textual way to see banking sector health")),
+                    (textInput("companyName", label = h3(" Company tag"), placeholder  = "Enter ticker followed by #", value = "#BARC")),
+                    box(offset = 1, plotOutput("tweetGraph") %>% withSpinner(color="#0dc5c1")),
+                    box(tabBox(
+                        title = paste0("Outlook & Challenges "),
+                        # The id lets us use input$tabset1 on the server to find the current tab
+                        id = "tabset1", height = "250px",width = NULL,
+                        tabPanel(title = "Challenges", "Here we will talk about the challenges faced by the bank/n
+                                 after reading the yearly statements"),
+                        
+                        tabPanel(title = "Outlook", "Here we will talk about the outlook expected by the bank/n
+                                 after reading the yearly statements")
+                            )
+
+                    )
             )
         )
-    ),
+    )
             
     # Put them together into a dashboardPage
     
@@ -78,7 +103,8 @@ server <- function(input, output) {
     output$table <- renderTable({fileGetter(input$text)})
     output$nrcGraph <- renderPlot({getNRCplot(input$text)})
     output$topicsGraph <- renderPlot({showTopics(input$text)})
-    output$intro <- renderUI({includeMarkdown("readme.Rmd")})
+    output$intro <- renderUI({includeMarkdown("intro.Rmd")})
+    output$tweetGraph <- renderPlot({getTweetPlot(input$companyName)})
 }
 
 # Run the application 

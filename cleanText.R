@@ -30,6 +30,6 @@ cleanText <- function(url) {
     
     dat.merged <- text_df %>%
       dplyr::group_by(rem) %>%
-      dplyr::summarise(value = paste(value, collapse = ""))
+      dplyr::summarise(value = paste(value, collapse = " "))
     return(dat.merged)
 }

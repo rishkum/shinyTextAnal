@@ -5,6 +5,6 @@ account: rish
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 2349472
-bundleId: 3184596
+bundleId: 3186956
 url: https://rish.shinyapps.io/shinytextanal/
-when: 1590337600.11684
+when: 1590400211.81156

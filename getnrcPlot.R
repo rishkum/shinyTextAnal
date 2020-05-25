@@ -37,10 +37,9 @@ getNRCplot <- function(url) {
       ggplot(aes(sentiment, word_count, fill = -word_count)) +
       geom_col() +
       guides(fill = FALSE) + #Turn off the legend
-      labs(x = NULL, y = "Word Count") +
-      scale_y_continuous(limits = c(0, 150)) + 
-      coord_flip()#Hard code the axis limit
-      labs(title = "Sentiment shown in the document")
+      labs(x = NULL, y = "Word Count", title = "Sentiment shown in the document") +
+      scale_y_continuous(limits = c(0, 150)) #Hard code the axis limit  + 
+      coord_flip()
       
     
     return(nrc_plot)
