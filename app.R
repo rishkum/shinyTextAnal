@@ -57,13 +57,25 @@ ui <-  dashboardPage(
                     ),
             
             tabItem(tabName = "analysis",
+                   column(width = 6,
                     fluidRow( h2("Analysis of Text Speech")),
                     fluidRow(textInput("text", label = h3("Link of Speech"), placeholder  = "Enter Link..",
                               value = "https://www.bankofengland.co.uk/-/media/boe/files/speech/2018/cyborg-supervision-speech-by-james-proudman.pdf?la=en&hash=6FFE5A1D19EAA76681DB615D9054C53DB8823AB4.pdf")),
-                    fluidRow(textOutput("selected_var")),
+                    #fluidRow(textOutput("selected_var")),
                     fluidRow(tableOutput("table")  %>% withSpinner(color="#0dc5c1")),
                     fluidRow(plotOutput("nrcGraph") %>% withSpinner(color="#0dc5c1")),
                     fluidRow(plotOutput("topicsGraph") %>% withSpinner(color="#0dc5c1"))
+                   ),
+                   column(width = 6,
+                       fluidRow( h2("Analysis of Text Speech")),
+                       fluidRow(textInput("text2", label = h3("Link of Speech"), placeholder  = "Enter Link..",
+                                          value = "https://www.bankofengland.co.uk/-/media/boe/files/speech/2019/managing-machines-the-governance-of-artificial-intelligence-speech-by-james-proudman.pdf?la=en&hash=8052013DC3D6849F91045212445955245003AD7D")),
+                      #fluidRow(textOutput("selected_var")),
+                       fluidRow(tableOutput("table2")  %>% withSpinner(color="#0dc5c1")),
+                       fluidRow(plotOutput("nrcGraph2") %>% withSpinner(color="#0dc5c1")),
+                       fluidRow(plotOutput("topicsGraph2") %>% withSpinner(color="#0dc5c1"))
+                   )
+                   
             ),
             tabItem(tabName = "bankhealth",
                     (h2(" A possible textual way to see banking sector health")),
@@ -103,6 +115,12 @@ server <- function(input, output) {
     output$table <- renderTable({fileGetter(input$text)})
     output$nrcGraph <- renderPlot({getNRCplot(input$text)})
     output$topicsGraph <- renderPlot({showTopics(input$text)})
+    
+    output$table2 <- renderTable({fileGetter(input$text2)})
+    output$nrcGraph2 <- renderPlot({getNRCplot(input$text2)})
+    output$topicsGraph2 <- renderPlot({showTopics(input$text2)})
+    
+    
     output$intro <- renderUI({includeMarkdown("intro.Rmd")})
     output$tweetGraph <- renderPlot({getTweetPlot(input$companyName)})
 }
