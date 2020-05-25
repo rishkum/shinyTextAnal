@@ -92,7 +92,7 @@ DT::datatable(freq2, editable = TRUE)
 
 tweetplot <- ggplot() + 
   geom_bar(mapping = aes(x = freq$date, y = freq$Freq, fill = freq$sentiment3), stat = "identity") +
-  ylab("Sentiment Frequency") + labs(title=paste0('Sentiments over time for ', key))+
+  ylab("Sentiment Frequency") + labs(title=paste0('Twitter sentiments over time for ', key))+
   xlab('Date') + theme_bw() +guides(fill=guide_legend(title="Sentiments"))
 return(tweetplot)
 }

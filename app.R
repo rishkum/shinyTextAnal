@@ -21,6 +21,7 @@ source("topicmodeling.R", local = TRUE)
 source("getnrcPlot.R", local = TRUE)
 source("cleanText.R", local = TRUE)
 source("twttersentiment.R", local = TRUE)
+source("newsSentimentPlot.R", local = T)
 
 library(shinydashboard)
 library(knitr)
@@ -57,29 +58,30 @@ ui <-  dashboardPage(
                     ),
             
             tabItem(tabName = "analysis",
-                   column(width = 6,
+                   column(width = 5,
                     fluidRow( h2("Analysis of Text Speech")),
                     fluidRow(textInput("text", label = h3("Link of Speech"), placeholder  = "Enter Link..",
                               value = "https://www.bankofengland.co.uk/-/media/boe/files/speech/2018/cyborg-supervision-speech-by-james-proudman.pdf?la=en&hash=6FFE5A1D19EAA76681DB615D9054C53DB8823AB4.pdf")),
                     #fluidRow(textOutput("selected_var")),
-                    fluidRow(tableOutput("table")  %>% withSpinner(color="#0dc5c1")),
-                    fluidRow(plotOutput("nrcGraph") %>% withSpinner(color="#0dc5c1")),
+                    fluidRow(tableOutput("table")  %>% withSpinner(color="#0dc5c1")),br(),
+                    fluidRow(plotOutput("nrcGraph") %>% withSpinner(color="#0dc5c1")),br(),
                     fluidRow(plotOutput("topicsGraph") %>% withSpinner(color="#0dc5c1"))
-                   ),
-                   column(width = 6,
+                   ),column(width = 2),
+                   column(width = 5,
                        fluidRow( h2("Analysis of Text Speech")),
                        fluidRow(textInput("text2", label = h3("Link of Speech"), placeholder  = "Enter Link..",
                                           value = "https://www.bankofengland.co.uk/-/media/boe/files/speech/2019/managing-machines-the-governance-of-artificial-intelligence-speech-by-james-proudman.pdf?la=en&hash=8052013DC3D6849F91045212445955245003AD7D")),
-                      #fluidRow(textOutput("selected_var")),
-                       fluidRow(tableOutput("table2")  %>% withSpinner(color="#0dc5c1")),
-                       fluidRow(plotOutput("nrcGraph2") %>% withSpinner(color="#0dc5c1")),
+                       br(),#fluidRow(textOutput("selected_var")),
+                       fluidRow(tableOutput("table2")  %>% withSpinner(color="#0dc5c1")),br(),
+                       fluidRow(plotOutput("nrcGraph2") %>% withSpinner(color="#0dc5c1")),br(),
                        fluidRow(plotOutput("topicsGraph2") %>% withSpinner(color="#0dc5c1"))
                    )
                    
             ),
             tabItem(tabName = "bankhealth",
-                    (h2(" A possible textual way to see banking sector health")),
-                    (textInput("companyName", label = h3(" Company tag"), placeholder  = "Enter ticker followed by #", value = "#BARC")),
+                    fluidRow((
+                        h2(" A possible textual way to see banking sector health")),
+                    textInput("companyName", label = h3(" Company tag"), placeholder  = "Enter ticker followed by #", value = "#BARC"),
                     box(offset = 1, plotOutput("tweetGraph") %>% withSpinner(color="#0dc5c1")),
                     box(tabBox(
                         title = paste0("Outlook & Challenges "),
@@ -90,7 +92,11 @@ ui <-  dashboardPage(
                         
                         tabPanel(title = "Outlook", "Here we will talk about the outlook expected by the bank/n
                                  after reading the yearly statements")
-                            )
+                            ))),
+                        
+                    fluidRow(column( width = 6, textInput("companyName2", label = h3(" Company Name"), placeholder  = "Enter name ", value = "Barclays")),
+  
+                        column(width = 6, box(width = NULL, plotOutput("newsGraph") %>% withSpinner(color="#0dc5c1"))))
 
                     )
             )
@@ -100,7 +106,7 @@ ui <-  dashboardPage(
     # Put them together into a dashboardPage
     
 
-)      
+  
         
     
 
@@ -123,6 +129,8 @@ server <- function(input, output) {
     
     output$intro <- renderUI({includeMarkdown("intro.Rmd")})
     output$tweetGraph <- renderPlot({getTweetPlot(input$companyName)})
+    output$newsGraph <- renderPlot({getnewsSentiment(input$companyName2)})
+    
 }
 
 # Run the application 
